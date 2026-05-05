@@ -154,7 +154,7 @@
 <body>
 
 <script>
-  const CONFIG = { SCRIPT_URL: "JOUW_APPS_SCRIPT_URL_HIER" };
+  const CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzQ92mqilJRg8q3sv4koLKKLnY_wqmOR7cHvCXMzC7czaLdX9y4UZ14wUbLGVV59FiEGg/exec" };
 </script>
 
 <div id="sticky-top">
@@ -495,59 +495,5 @@ setInterval(loadFromSheet, 60000);
 setInterval(renderCal, 60000);
 </script>
 
-<!--
-═══════════════════════════════════════════════════════════════
-  📋  GOOGLE APPS SCRIPT INSTELLEN (doe dit één keer)
-═══════════════════════════════════════════════════════════════
-
-STAP 1 — Maak een Google Sheet aan
-  • Ga naar sheets.google.com → maak een nieuw spreadsheet
-  • Noem het blad (tab onderaan) exact: "Reserveringen"
-
-STAP 2 — Voeg het Apps Script toe
-  • Ga in de sheet naar: Uitbreidingen → Apps Script
-  • Verwijder alle bestaande code en plak het volgende:
-
-────────────────────────────────────────────────────────────────
-const SHEET_NAME = "Reserveringen";
-
-function doGet(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  const data = sheet.getDataRange().getValues();
-  const result = {};
-  data.forEach(row => { if (row[0] && row[1]) result[row[0]] = row[1]; });
-  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  const payload = JSON.parse(e.postData.contents);
-  const items = payload.batch || [{ key: payload.key, owner: payload.owner }];
-  const data = sheet.getDataRange().getValues();
-  const rowMap = {};
-  data.forEach((row, i) => { if (row[0]) rowMap[row[0]] = i + 1; });
-  items.forEach(({ key, owner }) => {
-    if (owner === "" || owner === null || owner === undefined) {
-      if (rowMap[key]) sheet.deleteRow(rowMap[key]);
-    } else {
-      if (rowMap[key]) { sheet.getRange(rowMap[key], 2).setValue(owner); }
-      else { sheet.appendRow([key, owner]); }
-    }
-  });
-  return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
-}
-────────────────────────────────────────────────────────────────
-
-STAP 3 — Publiceer als webapp
-  • Klik op "Implementeren" → "Nieuwe implementatie"
-  • Type: Web-app
-  • Uitvoeren als: Ik (jouw account)
-  • Toegang: Iedereen
-  • Klik "Implementeren" en kopieer de URL
-
-STAP 4 — Vul de URL in bovenaan dit bestand
-  • Vervang JOUW_APPS_SCRIPT_URL_HIER door de gekopieerde URL
-═══════════════════════════════════════════════════════════════
--->
 </body>
 </html>
